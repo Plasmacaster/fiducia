@@ -142,7 +142,7 @@ def cleanupHeader(dataFrame):
     return cleanedDataFrame
 
 
-def loadResponses(channels, fileName, solid=True, area=True):
+def loadResponses(channels, fileName, convert=True, solid=True, area=True):
     r"""
     Load DANTE measurement data from files given the channels and path to the
     directory containing the response function files. Returns a dataframe
@@ -186,7 +186,7 @@ def loadResponses(channels, fileName, solid=True, area=True):
     # for this particular shot
     colFilter = ['Energy(eV)'] + channels
     responseFrame = cleanedFrame[colFilter].copy()
-    # set default units of response functions
+    # set default units of response functions to V/W (convert from V/GW)
     responseFrame.units = "(V/GW)"
     # convert energy column from strings to floats (if necessary)
     if type(responseFrame['Energy(eV)'][0]) == str:
@@ -195,22 +195,31 @@ def loadResponses(channels, fileName, solid=True, area=True):
     else:
         energyFloats = responseFrame['Energy(eV)'].astype(float)
         responseFrame.loc[:,'Energy(eV)'] = energyFloats
-
+        
+    if convert:
+        for chan in channels:
+            # perform conversion to V/W
+            responseFrame.loc[:, chan] *= 1e-9
+            responseFrame.convert = True
+            responseFrame.units = "(V/W)"
+            
     if solid:
         for chan in channels:
             # multiply each element by the corresponding channel solid angle
             # this also converts from GW to W (factor of 1e-9)
-            responseFrame.loc[:, chan] *= solidAngles[chan-1]*1e-9
+            responseFrame.loc[:, chan] *= solidAngles[chan-1]
             #save metadata that we already include solid angle
             responseFrame.solid = True
             responseFrame.units = "(V.sr/W)"
+        
     if area:
         for chan in channels:
             # multiply each element by corresponding channel detector area
             # this also converts from GW to W (factor of 1e-9)
-            responseFrame.loc[:, chan] *= solidAngles[chan-1]*chamberRad**2*1e-9
+            responseFrame.loc[:, chan] *= solidAngles[chan-1]*chamberRad**2
             responseFrame.area = True
             responseFrame.units = "(V.cm^2/W)"
+            
     if area and solid:
         responseFrame.units = "(V.cm^2.sr/W)"
 

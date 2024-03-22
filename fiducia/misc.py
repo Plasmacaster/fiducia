@@ -44,6 +44,9 @@ solidAngles = [4.48e-6,
 # radius of OMEGA chamber
 chamberRadius = 180 #* u.cm
 
+# standoff distance of detector area
+standoff = 436.1
+
 def find_nearest(array, value):
     r"""
     Find nearest value in array and return index, and value as a tuple.
