@@ -142,7 +142,7 @@ def cleanupHeader(dataFrame):
     return cleanedDataFrame
 
 
-def loadResponses(channels, fileName, solid=True):
+def loadResponses(channels, fileName, solid=True, area=True):
     r"""
     Load DANTE measurement data from files given the channels and path to the
     directory containing the response function files. Returns a dataframe
@@ -186,6 +186,8 @@ def loadResponses(channels, fileName, solid=True):
     # for this particular shot
     colFilter = ['Energy(eV)'] + channels
     responseFrame = cleanedFrame[colFilter].copy()
+    # set default units of response functions
+    responseFrame.units = "(V/GW)"
     # convert energy column from strings to floats (if necessary)
     if type(responseFrame['Energy(eV)'][0]) == str:
         energyFloats = responseFrame['Energy(eV)'].str.replace(',', '')
@@ -196,11 +198,21 @@ def loadResponses(channels, fileName, solid=True):
 
     if solid:
         for chan in channels:
-            #multiply each element by the corresponding channel solid angle
-            #convert V/GW to V/W for benchmarking against Mathematica Fiducia
-            responseFrame.loc[:, chan] *= solidAngles[chan-1]**2*1e-9*chamberRad**2
+            # multiply each element by the corresponding channel solid angle
+            # this also converts from GW to W (factor of 1e-9)
+            responseFrame.loc[:, chan] *= solidAngles[chan-1]*1e-9
             #save metadata that we already include solid angle
             responseFrame.solid = True
+            responseFrame.units = "(V.sr/W)"
+    if area:
+        for chan in channels:
+            # multiply each element by corresponding channel detector area
+            # this also converts from GW to W (factor of 1e-9)
+            responseFrame.loc[:, chan] *= solidAngles[chan-1]*chamberRad**2*1e-9
+            responseFrame.area = True
+            responseFrame.units = "(V.cm^2/W)"
+    if area and solid:
+        responseFrame.units = "(V.cm^2.sr/W)"
 
     return responseFrame
 
