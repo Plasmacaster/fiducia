@@ -1468,6 +1468,38 @@ def knotSolvePCHIP_jit(signals,
                        knots,
                        initial = np.array([]),
                        xInterp = 'default'):
+    """
+    See knotSolvePCHIP for complete definition. This is a compiled (jit)
+    version of knotSolvePCHIP designed to run in the MC functions for
+    expedient calculations.
+
+    Parameters
+    ----------
+    signals : ndarray
+        The input signals from Dante data for one time step.
+    responseArray : ndarray
+        A numpy array of response function information for each channel to be
+        analyzed. This is NOT equivalent to the responseFrame DataFrame. Use
+        get_resposnes function to convert between the DataFrame and ndarray.
+    knots : ndarray
+        A 1-D array containing the phtoon energies at which the knot points
+        occur.
+    initial : ndarray, optional
+        The initial guess for the minimizer. No initial guess is required as 
+        Fiducia starts from the linear spline solutions automatically 
+        The default is np.array([]).
+    xInterp : str, ndarray, optional
+        The interpolation x-coordinates for PCHIP. The default value gives the
+        standard ~1eV resolution for the interpolant. The default is 'default'.
+
+    Returns
+    -------
+    knotsY : ndarray
+        The y values of the knot points needed to construct the spline. This
+        represents the solution for the flux as measured by Dante.The input
+        variable <knots> form the xpoints.
+
+    """
     
     # solve linear spline first to provide seeding for Nelder-Mead simplex
     if len(initial) == 0:
@@ -1501,6 +1533,22 @@ def knotSolvePCHIP_jit(signals,
     return knotsY
 
 def get_errors(channels):
+    """
+    Retrieves both random and systematic errors for each input channel
+
+    Parameters
+    ----------
+    channels : ndarray
+        Dante channels for which you want errors.
+
+    Returns
+    -------
+    get_rand : ndarray
+        The random error associated with each channel.
+    get_sys : ndarray
+        The systematic error associated with each channel.
+
+    """
     randErrors = np.array([7.8, 7.8, 18., 13.2, 8.3, 7.1, 7.1, 7.1, 7.1,
                             5.4, 5.4, 5.4, 5.4, 5.4, 5.4, 5.4, 5.4, 5.4])
     sysErrors = np.array([17.4, 8.2, 11.5, 6.0, 3.8, 2.3, 2.3, 2.3, 2.3,
@@ -1512,19 +1560,20 @@ def get_errors(channels):
 
 def get_responses(responseFrame, channels):
     """
-    Converts responseFrame into numpy arrays to read into jitted functions
+    Converts responseFrame from Pandas DataFrame into numpy arrays to read 
+    into jitted functions
 
     Parameters
     ----------
-    responseFrame : TYPE
-        DESCRIPTION.
-    channels : TYPE
-        DESCRIPTION.
+    responseFrame : DataFrame
+        Input Pandas DataFrame containing Dante response functions.
+    channels : ndarray
+        The channels for which you want the response functions.
 
     Returns
     -------
-    resp : TYPE
-        DESCRIPTION.
+    resp : ndarray
+        A numpy array containing the response function data requested.
 
     """
     responses = responseFrame[channels].to_numpy()
