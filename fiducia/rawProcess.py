@@ -736,7 +736,7 @@ def polyBkg(time,
     upperLength: int
         Length over which to take the polynomial background fit on the
         upper end (later in time) segment of the signal, with respect
-        to upperEdge. Defualt is None, which then just picks the second
+        to upperEdge. Default is None, which then just picks the second
         to last point in the signal.
         
     plot: bool
