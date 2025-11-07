@@ -178,6 +178,7 @@ def loadResponses(channels, fileName, convert=True, solid=True, area=True):
 
     solidAngles = fiducia.misc.solidAngles
     chamberRad = fiducia.misc.chamberRadius
+    standoff = fiducia.misc.standoff
     # loading all the response functions
     dataFrame = pd.read_csv(fileName)
     #clean headers
@@ -188,6 +189,10 @@ def loadResponses(channels, fileName, convert=True, solid=True, area=True):
     responseFrame = cleanedFrame[colFilter].copy()
     # set default units of response functions to V/W (convert from V/GW)
     responseFrame.units = "(V/GW)"
+    # set default metadata flags
+    responseFrame.convert = False
+    responseFrame.solid = False
+    responseFrame.area = False
     # convert energy column from strings to floats (if necessary)
     if type(responseFrame['Energy(eV)'][0]) == str:
         energyFloats = responseFrame['Energy(eV)'].str.replace(',', '')

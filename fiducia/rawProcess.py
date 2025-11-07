@@ -871,7 +871,7 @@ def signalEdges(timesFrame,
         signal = df[ch]
         # finding peaks which are above the mean of the signal
         peaks, properties = find_peaks(signal,
-                                       height=avgMult * np.mean(signal),
+                                       height=avgMult,
                                        prominence=prominence,
                                        width=width)
         # if no peaks are detected, just take the max of the input signal
@@ -881,9 +881,9 @@ def signalEdges(timesFrame,
             prom2, _, _ = peak_prominences(signal, sigMax)
             prom2Val = prom2[0]
             peaks, properties = find_peaks(signal,
-                                           height=avgMult * np.mean(signal),
-                                           prominence=prom2Val,
-                                           width=width)
+                                            height=avgMult,
+                                            prominence=prom2Val,
+                                            width=width)
         # determining lower and upper bounds of signal region by taking first
         # and last peaks and shifting by distance of peak width
         # width1 = properties["widths"][0]

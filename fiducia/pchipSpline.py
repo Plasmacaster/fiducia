@@ -152,7 +152,7 @@ def minFunc(yKnotVals,
                           responseFrame[chan],
                           xInterp)
         convolve = pchipResp*pchipSol
-        integCon = np.trapz(convolve, xInterp)
+        integCon = np.trapezoid(convolve, xInterp)
         solution[idx] = integCon
     residual = np.sum((solution-voltages)**2)**(1/2)
     
@@ -217,7 +217,7 @@ def knotSolvePCHIP(signals,
         Linespline = initial
     
     # initial point guess based upon initial linear spline point
-    y0 = Linespline[0]*1e-1
+    y0 = Linespline[0]*1e-7
 
     # list of bounds. Accept only physical soltuions (knotsY>0)
     bounds = [(0, np.inf) for _ in range(len(channels))]
