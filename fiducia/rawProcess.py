@@ -1043,7 +1043,7 @@ def highestPeak(signal, peakIdxs):
     --------
     """
     # search for first tallest peak
-    peakSignals = signal[peakIdxs]
+    peakSignals = signal.iloc[peakIdxs]
     peakHighestIdx = pd.Series.idxmax(peakSignals)
     # finding index of tallest peak in peakIdxs array (since this is a
     # numpy array and is indexed differently from peakSignals).
@@ -1184,8 +1184,9 @@ def getPeaks(timesFrame,
         # if no peaks are detected, just take the max of the input signal
         # find the prominence of the max and re-run find_peaks
         if len(peaks)==0:
-            sigMax = np.array([signal.idxmax()])
-            prom2, _, _ = peak_prominences(signal, sigMax)
+            sigNP = signal.to_numpy()
+            sigMax = [signal.argmax()]
+            prom2, _, _ = peak_prominences(sigNP, sigMax)
             prom2Val = prom2[0]
             peaks, properties = find_peaks(signal,
                                            height=avgMult * np.mean(signal),
