@@ -185,7 +185,7 @@ def loadResponses(channels, fileName, convert=True, solid=True, area=True):
     cleanedFrame = cleanupHeader(dataFrame)
     # filtering for channels we care about
     # for this particular shot
-    colFilter = ['Energy(eV)'] + channels
+    colFilter = pd.Index(['Energy(eV)']).append(pd.Index(channels))
     responseFrame = cleanedFrame[colFilter].copy()
     # set default units of response functions to V/W (convert from V/GW)
     responseFrame.units = "(V/GW)"
