@@ -12,6 +12,7 @@ Miscellaneous utilities
 import numpy as np
 import astropy.units as u
 import copy
+import matplotlib.pyplot as plt
 
 # listing all functions declared in this file so that sphinx-automodapi
 # correctly documents them and doesn't document imported functions.
@@ -153,3 +154,47 @@ def areDataFramesCompatible(channels, *frames):
     
     #no more tests to run, DataFrames are compatible with the relevant channels
     return True
+
+def planckian(E, T, plot=False):
+    r"""
+    Calculate the Planckian spectral radiance.
+    
+    Parameters
+    ----------
+    E: numpy.ndarray
+        Energy values (eV).
+    T: float
+        Temperature (eV).
+    
+    Returns
+    -------
+    numpy.ndarray
+        Planckian spectral radiance values (W/sr/m^2/eV).
+    
+    Notes
+    -----
+    
+    See also
+    --------
+    
+    Examples
+    --------
+    """
+    h = 4.135667696e-15 # eV*s
+    c = 299792458 # m/s
+    k = 8.617333262e-5 # eV/K
+    E_J = E * 1.60218e-19 # convert eV to J
+    # T_K = T / k # convert eV to K
+    B_E = (2 * E**3)*1.60218e-19 / (h**3 * c**2) * 1/(np.exp(E/T) - 1)
+
+    if plot:
+        plt.figure(6)
+        plt.plot(E, B_E, label = 'Planckian at 100 eV')
+        plt.xlabel('Energy (eV)')
+        plt.ylabel('Spectral Radiance (W/sr/m^2/eV)')
+        plt.title("Planckian Spectrum at 100 eV")
+        plt.xlim(0, 3000)
+        plt.ylim(0, 1.2e15)
+        plt.show()
+
+    return B_E
