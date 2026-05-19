@@ -193,8 +193,8 @@ def planckian(E, T, plot=False):
         plt.xlabel('Energy (eV)')
         plt.ylabel('Spectral Radiance (W/sr/m^2/eV)')
         plt.title("Planckian Spectrum at 100 eV")
-        plt.xlim(0, 3000)
-        plt.ylim(0, 1.2e15)
+        # plt.xlim(0, 3000)
+        # plt.ylim(0, 1.2e15)
         plt.show()
 
     return B_E
