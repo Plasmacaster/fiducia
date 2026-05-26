@@ -10,7 +10,7 @@ Miscellaneous utilities
 
 # python modules
 import numpy as np
-import astropy.units as u
+# import astropy.units as u
 import copy
 import matplotlib.pyplot as plt
 
