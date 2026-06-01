@@ -20,7 +20,6 @@ __all__ = ["find_nearest",
            "areDataFramesCompatible",
            ]
 
-
 # solid angles of channels 1 thru 18 (from C Sorce)
 # This is in steradians (added by DHB 3/22/2019)
 solidAngles = [4.48e-6,
