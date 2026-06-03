@@ -142,7 +142,7 @@ def cleanupHeader(dataFrame):
     return cleanedDataFrame
 
 
-def loadResponses(channels, fileName, convert=True, solid=True, area=True):
+def loadResponses(channels, fileName, convert=True, solid=True, area=False):
     r"""
     Load DANTE measurement data from files given the channels and path to the
     directory containing the response function files. Returns a dataframe
