@@ -228,6 +228,9 @@ def loadResponses(channels, fileName, convert=True, solid=True, area=False):
     if area and solid:
         responseFrame.units = "(V.cm^2.sr/W)"
 
+    # replace empty or NaN entries with 0
+    responseFrame.fillna(0, inplace=True)
+
     return responseFrame
 
 
